@@ -28,7 +28,6 @@ func main() {
 	s := make([]string, numColors)
 	for i, h := range colors.NewHSLSet(numColors, saturation, lightness) {
 		s[i] = fmt.Sprint(h)
-		fmt.Println(h, h.ToRGB(), s[i])
 	}
 	funcMap := template.FuncMap{
 		"safe": func(s string) template.CSS {
