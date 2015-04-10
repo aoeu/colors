@@ -19,6 +19,22 @@ var templText = `
 </html>
 `
 
+func preview(c []colors.HSL) {
+	// TODO(aoeu): Implement browser preview here.
+}
+
+
+/*
+
+TODO(aoeu): Something like this is what gets jammed into d3.
+Dump it on a command line? 
+Sprintf out the whole line of js? (No.)
+var color = d3.scale.ordinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", 
+            "#a05d56", "#d0743c", "#ff8c00"]);
+
+*/
+
 func main() {
 	port := *flag.String("port", ":8081", "The port to serve on")
 	numColors := *flag.Int("num", 20, "The number of colors")
@@ -47,3 +63,4 @@ func main() {
 	})
 	log.Fatal(http.ListenAndServe(port, nil))
 }
+
