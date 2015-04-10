@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"flag"
 	"colors"
+	"flag"
+	"fmt"
 	"html/template"
-	"net/http"
 	"log"
+	"net/http"
 )
 
 var templText = `
@@ -21,9 +21,9 @@ var templText = `
 
 func main() {
 	port := *flag.String("port", ":8081", "The port to serve on")
-	numColors  := *flag.Int("num", 20, "The number of colors")
-	saturation := *flag.Float64("saturation", 1.0, "Amount of saturation") 
-	lightness  := *flag.Float64("lightness", 0.5, "Amount of lightness")
+	numColors := *flag.Int("num", 20, "The number of colors")
+	saturation := *flag.Float64("saturation", 1.0, "Amount of saturation")
+	lightness := *flag.Float64("lightness", 0.5, "Amount of lightness")
 	flag.Parse()
 	s := make([]string, numColors)
 	for i, h := range colors.NewHSLSet(numColors, saturation, lightness) {
@@ -40,10 +40,10 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {		
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := t.Execute(w, &s)
-		if err != nil { 
-			log.Fatal(err)	
+		if err != nil {
+			log.Fatal(err)
 		}
 	})
 	log.Fatal(http.ListenAndServe(port, nil))

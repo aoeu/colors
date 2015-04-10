@@ -4,8 +4,7 @@ package colors
 // colorsys python module.
 // https://hg.python.org/cpython/file/2.7/Lib/colorsys.py
 
-
-// TODO(aoeu): Refactor mulitplication and division by 360. 
+// TODO(aoeu): Refactor mulitplication and division by 360.
 
 import (
 	"fmt"
@@ -27,7 +26,7 @@ type HSL struct {
 func NewHSLSet(size int, saturation, lightness float64) []HSL {
 	h := make([]HSL, size)
 	for i := 0; i < size; i++ {
-		hue := (360.0 / float64(size)) * float64(i) 
+		hue := (360.0 / float64(size)) * float64(i)
 		h[i] = HSL{hue, saturation, lightness}
 	}
 	return h
