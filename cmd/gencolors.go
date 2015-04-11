@@ -36,38 +36,54 @@ func toECMAScriptArray(c []string) string {
 	return s
 }
 
-func main() {
-	// TODO(aoeu): Add flag values as an anonymous struct
-	serve := flag.Bool("preview", false, "Preview this as a web page")
-	port := flag.String("port", ":8081", "The port to serve on")
-	numColors := flag.Int("num", 14, "The number of colors")
-	saturation := flag.Float64("saturation", 0.9, "Amount of saturation")
-	dump := flag.Bool("dump", true, "Dump preview results to standard output.")
-	lightness := flag.Float64("lightness", 0.5, "Amount of lightness")
-	flag.Parse()
-
-	s := make([]string, *numColors)
-	for i, h := range colors.NewHSLSet(*numColors, *saturation, *lightness) {
-		s[i] = fmt.Sprint(h.ToRGB())
-	}
+func newHTMLTemplate() (*template.Template, error) {
 	funcMap := template.FuncMap{
 		"safe": func(s string) template.CSS {
 			return template.CSS(s)
 		},
 	}
-
-	fmt.Println(toECMAScriptArray(s))
-
-	if !*serve {
-		return
-	}
 	t := template.New("colors").Funcs(funcMap)
-	t, err := t.Parse(templText)
-	if err != nil {
-		log.Fatal(err)
+	return t.Parse(templText)
+}
+
+func genHSLColors(numColors int, saturation, lightness float64) []string {
+	s := make([]string, numColors)
+	for i, h := range colors.NewHSLSet(numColors, saturation, lightness) {
+		s[i] = fmt.Sprint(h.ToRGB())
 	}
+	return s
+}
+
+func genKellySafe() []string {
+	s := make([]string, len(colors.KellySafe))
+	i := 0
+	for _, c := range colors.KellySafe {
+		s[i] = c.String()
+		i++
+	}
+	return s
+}
+
+func main() {
+	// TODO(aoeu): Add flag values as an anonymous struct
+	serve := flag.Bool("preview", false, "Preview colors as a web page")
+	port := flag.String("port", ":8081", "The port to serve on")
+	numColors := flag.Int("num", 14, "The number of colors")
+	saturation := flag.Float64("saturation", 0.9, "Amount of saturation")
+	js := flag.Bool("js", false, "Dump colors as a ECMAScript array")
+	dump := flag.Bool("dump", false, "Dump preview results to standard output.")
+	lightness := flag.Float64("lightness", 0.5, "Amount of lightness")
+	flag.Parse()
+	s := genHSLColors(*numColors, *saturation, *lightness)
+	s = genKellySafe()
+	if *js {
+		fmt.Println(toECMAScriptArray(s))
+	}
+	t := template.Must(newHTMLTemplate())
 	if *dump {
 		t.Execute(os.Stdout, &s)
+	}
+	if !*serve {
 		return
 	}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

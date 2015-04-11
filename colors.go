@@ -80,6 +80,12 @@ type RGB struct {
 	Blue  float64
 }
 
+func NewRGB(r, g, b int) *RGB {
+	return &RGB{ Red: float64(r)/255.0, 
+		Green: float64(g)/255.0, 
+		Blue: float64(b)/255.0}
+}
+
 func (rgb RGB) String() string {
 	var r, g, b uint8 = uint8(255 * rgb.Red), uint8(255 * rgb.Green), uint8(255 * rgb.Blue)
 	return fmt.Sprintf("#%.2x%.2x%.2x", r, g, b)
